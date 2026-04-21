@@ -74,6 +74,22 @@ git commit 被触发
 
 即 **只在"你真的要让 git 给你开编辑器让你写 message"的场景下才介入**，不会抢走你的 `-m`、不会覆盖 merge commit 的默认文案、不会无视你认真写的模板。
 
+## 跳过编辑器，直接提交（可选）
+
+默认 `git commit` 会在 hook 填好消息后还开一次编辑器让你过目。如果你想 AI 写完就直接 commit、一步到位，加一个 git alias：
+
+```bash
+git config --global alias.ac '-c core.editor=true commit'
+```
+
+然后：
+
+- `git ac` —— AI 生成消息后直接提交，不开编辑器
+- `git commit` —— 保持原行为，AI 预填 + 编辑器 review
+- `git commit -m "..."` —— 完全绕过 AI，自己写
+
+原理：`core.editor=true` 把编辑器临时替换成 `true` 命令（什么都不做、立即成功返回）。hook 已经把消息写进文件了，git 不需要真的开编辑器。
+
 ## 自定义 prompt
 
 直接编辑 `~/.config/git/hooks/prepare-commit-msg` 里那段传给 `claude` 的 prompt 即可。比如想让 message 包含 emoji、走中文、加上 scope 等等。
