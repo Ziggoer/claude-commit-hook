@@ -37,6 +37,12 @@ cd claude-commit-hook
 2. 把 hook 复制到 `~/.config/git/hooks/prepare-commit-msg` 并加可执行权限
 3. 设置 `git config --global core.hooksPath ~/.config/git/hooks`
 
+### Windows 用户
+
+需要在 **Git Bash**（Git for Windows 自带）或 **WSL** 里跑 `install.sh`，PowerShell/cmd 本身不能直接执行 bash 脚本。装完之后，无论你从哪里触发 `git commit`（命令行、GUI 客户端如 Fork/SourceTree/GitHub Desktop），hook 都会被 git 自动调用 —— GUI 客户端底层也是 Git for Windows，会用它自带的 bash 解释 shebang。
+
+仓库里 `.gitattributes` 已强制 `prepare-commit-msg` 和 `*.sh` 使用 LF 换行，规避了 Windows 常见的 `bad interpreter: /bin/bash^M` 问题。
+
 ## 卸载
 
 ```bash

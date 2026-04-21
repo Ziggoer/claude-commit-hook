@@ -1,0 +1,5 @@
+# Force LF for shell scripts so they remain executable under Git Bash on Windows.
+# Without this, core.autocrlf=true on Windows would turn LF into CRLF and break
+# the '#!/bin/bash' shebang ("bad interpreter: /bin/bash^M").
+prepare-commit-msg text eol=lf
+*.sh              text eol=lf
