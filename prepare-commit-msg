@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# $1 = commit message file, $2 = source (message/template/merge/squash/commit)
+# Skip when message source is already provided (-m, -F, merge, squash, -c, --amend, -t)
+if [ -n "$2" ]; then
+    exit 0
+fi
+
+DIFF=$(git diff --cached)
+if [ -z "$DIFF" ]; then
+    exit 0
+fi
+
+MSG=$(echo "$DIFF" | claude "
+Write a conventional commit message.
+
+Rules:
+- type: feat/fix/chore/refactor/docs/test
+- max 72 chars
+- no explanation
+- output only message
+" 2>/dev/null)
+
+# Fallback: if claude failed or returned empty, leave the default template untouched
+if [ -n "$MSG" ]; then
+    echo "$MSG" > "$1"
+fi
