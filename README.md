@@ -58,17 +58,21 @@ cd claude-commit-hook
 ```
 git commit 被触发
     │
-    ├─ 有 -m / -F / --amend / merge / squash / -c / -t 等显式 message 源？
+    ├─ 有 -m / -F / --amend / merge / squash / -c 等显式 message 源？
     │     └─ 直接退出，什么都不做
+    │
+    ├─ 有非空 commit.template（-t 或全局 commit.template 配置）？
+    │     └─ 直接退出，尊重用户模板
+    │     （空模板如 SourceTree 默认的 ~/.stCommitMsg 会继续走 claude）
     │
     ├─ 没有 staged 改动？
     │     └─ 直接退出
     │
-    └─ 把 `git diff --cached` 管道给 claude，取回 message 写进文件
-            └─ 如果 claude 失败或返回空 → 保留 git 默认模板（fallback）
+    └─ 把 `git diff --cached` 管道给 claude -p，取回 message 写进文件
+            └─ 如果 claude 失败或返回空 → 保留 git 默认模板（fallback，并打印到 stderr）
 ```
 
-即 **只在"你真的要让 git 给你开编辑器让你写 message"的场景下才介入**，不会抢走你的 `-m`、不会覆盖 merge commit 的默认文案。
+即 **只在"你真的要让 git 给你开编辑器让你写 message"的场景下才介入**，不会抢走你的 `-m`、不会覆盖 merge commit 的默认文案、不会无视你认真写的模板。
 
 ## 自定义 prompt
 
